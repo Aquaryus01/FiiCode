@@ -1,1 +1,1 @@
-# FiiCode
+# SkipAllergy
