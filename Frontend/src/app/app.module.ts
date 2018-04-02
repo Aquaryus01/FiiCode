@@ -4,7 +4,10 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { AppComponent } from './app.component';
 import { AuthenticateModule } from './_modules/authenticate/authenticate.module';
+import {SettingsService} from './_services/settings.service'
+import {UserService} from './_services/user.service'
 
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -13,9 +16,13 @@ import { AuthenticateModule } from './_modules/authenticate/authenticate.module'
   imports: [
     BrowserModule,
     AuthenticateModule,
-    RouterModule
+    RouterModule,
+    HttpClientModule
   ],
-  providers: [],
+  providers: [
+    SettingsService,
+    UserService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

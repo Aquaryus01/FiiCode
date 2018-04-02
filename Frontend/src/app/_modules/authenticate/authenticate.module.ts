@@ -3,6 +3,10 @@ import { CommonModule } from '@angular/common';
 import { SignInComponent } from './sign-in/sign-in.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
 import { RouterModule, Routes } from '@angular/router';
+import { NavbarComponent } from './navbar/navbar.component';
+import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule } from '@angular/common/http';
+import { ReactiveFormsModule } from '@angular/forms';
 
 const appRoutes: Routes = [
   { path: 'sign-in', component: SignInComponent },
@@ -13,8 +17,11 @@ const appRoutes: Routes = [
   imports: [
     CommonModule,
     RouterModule.forRoot(
-      appRoutes)
+      appRoutes),
+      BrowserModule,
+      HttpClientModule,
+      ReactiveFormsModule
   ],
-  declarations: [SignInComponent, SignUpComponent]
+  declarations: [SignInComponent, SignUpComponent, NavbarComponent]
 })
 export class AuthenticateModule { }
