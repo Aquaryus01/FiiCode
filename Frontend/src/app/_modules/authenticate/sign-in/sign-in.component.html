@@ -1,8 +1,11 @@
 <app-navbar></app-navbar>
 <div class="container">
    <div class="row vertical-offset-100" style="margin-top:20%">
-      <div class="col-md-4"></div>
       <div class="col-md-4">
+          <img src="../../../../assets/allergies.jpg" alt="Smiley face" height="100%" width="100%"> 
+      </div>
+      <div class="col-md-2"></div>
+      <div class="col-md-4" style="margin-top:20%">
          <div class="panel panel-default">
             <div class="panel-heading">
                <h3 class="panel-title">Please sign in</h3>
@@ -16,17 +19,19 @@
                      <div class="form-group">
                         <input class="form-control"  formControlName="password" placeholder="Password" name="password" type="password" value="">
                      </div>
-                     <input class="btn btn-lg btn-success btn-block" type="submit" value="Login">
+                     <button class="btn btn-primary form-control" [disabled]='!rForm.valid'>Login</button>
                   </fieldset>
+                  
+                  <button routerLink="/sign-up" class="btn btn-success form-control" style="margin-top: 3%">Sign Up</button>
                </form>
-
+              <br>
               <div class="alert alert-danger space" *ngIf="no_auth && !rForm.controls['email'].dirty">
                 <strong>Error!</strong> Invalid username/password match!.
-            </div>
+              </div>
 
             </div>
          </div>
       </div>
-      <div class="col-md-4"></div>
+      <div class="col-md-2"></div>
    </div>
 </div>
