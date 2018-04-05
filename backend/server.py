@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 import sqlite3
 import jwt
 import json
@@ -22,20 +22,16 @@ def login():
         if not sha256_crypt.verify(data['password'], c.fetchone()[0]):
             return json.dumps({'status': False, 'message': 'Wrong password!'})
         else:
-            c.execute('SELECT userId FROM users WHERE email = (?)', (data['email'],))
+            c.execute('SELECT user_id FROM users WHERE email = (?)', (data['email'],))
             user_data = c.fetchone()
-            encoded_jwt = jwt.encode({'userId': user_data[0]}, jwt_key)
-            return json.dumps({'status': True, 'values': {'jwt': encoded_jwt}})
+            encoded_jwt = jwt.encode({'user_id': user_data[0]}, jwt_key)
+            return json.dumps({'status': True, 'values': {'jwt': encoded_jwt.decode()}})
     except Exception as e:
-        return json.dumps({'status': False, 'message': e})
+        return json.dumps({'status': False})
 
 @app.route('/register', methods=['POST'])
 def register():
     data = request.get_json(force=True)
-    try:
-        decoded = jwt.decode(data['code'], jwt_key)
-    except:
-        return json.dumps({'status': False, 'message': 'Invalid JWT'})
     to_add = (data['first_name'],
               data['last_name'],
               data['email'],
@@ -45,13 +41,13 @@ def register():
             (first_name, last_name, email, password) \
             VALUES (?, ?, ?, ?)', to_add)
         con.commit()
-        c.execute('SELECT userId FROM users WHERE email = (?)', (data['email'],))
+        c.execute('SELECT user_id FROM users WHERE email = (?)', (data['email'],))
         user_data = c.fetchone()
-        encoded_jwt = jwt.encode({'userId': user_data[0]}, jwt_key)
-        to_send = {'status': True, 'values': {'jwt': encoded_jwt}}
+        encoded_jwt = jwt.encode({'user_id': user_data[0]}, jwt_key)
+        to_send = {'status': True, 'values': {'jwt': encoded_jwt.decode()}}
         return json.dumps(to_send)
     except Exception as e:
-        return json.dumps({'status': False, 'message': e})
+        return json.dumps({'status': False, 'message': 'Email already in use'})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
