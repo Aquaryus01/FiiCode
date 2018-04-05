@@ -19,10 +19,12 @@
                      <div class="form-group">
                         <input class="form-control"  formControlName="password" placeholder="Password" name="password" type="password" value="">
                      </div>
-                     <button class="btn btn-primary form-control" [disabled]='!rForm.valid'>Login</button>
+                     <button class="btn btn-blue form-control" [disabled]='!rForm.valid'>Login</button>
+                     
                   </fieldset>
                   
-                  <button routerLink="/sign-up" class="btn btn-success form-control" style="margin-top: 3%">Sign Up</button>
+                  <button routerLink="/sign-up" class="btn btn-green form-control" style="margin-top: 3%">Sign Up</button>
+                  
                </form>
               <br>
               <div class="alert alert-danger space" *ngIf="no_auth && !rForm.controls['email'].dirty">
