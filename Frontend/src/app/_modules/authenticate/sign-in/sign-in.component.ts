@@ -30,12 +30,12 @@ export class SignInComponent implements OnInit {
     this.user.login(parameter).subscribe(
         res => {
           console.log(res);
-          if(res['Value']==true)
+          if(res['status']==true)
           {
-              this.settings.setToken(res['Token']);
+              this.settings.setToken(res['values'].token);
               this.router.navigate(['/']);
           }
-          else if(res['Value']==false)
+          else if(res['status']==false)
           {
               this.no_auth = true;
           }

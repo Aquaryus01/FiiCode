@@ -8,14 +8,17 @@ import {SettingsService} from './_services/settings.service'
 import {UserService} from './_services/user.service'
 
 import { HttpClientModule } from '@angular/common/http';
+import { MainModule } from './_modules/main/main.module';
 
 @NgModule({
   declarations: [
     AppComponent
   ],
   imports: [
-    BrowserModule,
     AuthenticateModule,
+    MainModule,
+
+    BrowserModule,
     RouterModule,
     HttpClientModule
   ],

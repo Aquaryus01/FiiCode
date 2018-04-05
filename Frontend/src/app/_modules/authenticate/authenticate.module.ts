@@ -7,10 +7,10 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
-
+import {AuthGuard} from './_guards/auth.guard'
 const appRoutes: Routes = [
-  { path: 'sign-in', component: SignInComponent },
-  { path: 'sign-up', component: SignUpComponent },
+  { path: 'sign-in', component: SignInComponent, canActivate: [AuthGuard]},
+  { path: 'sign-up', component: SignUpComponent, canActivate: [AuthGuard]},
 ];
 
 @NgModule({
@@ -22,6 +22,7 @@ const appRoutes: Routes = [
       HttpClientModule,
       ReactiveFormsModule
   ],
-  declarations: [SignInComponent, SignUpComponent, NavbarComponent]
+  declarations: [SignInComponent, SignUpComponent, NavbarComponent],
+  providers: [AuthGuard]
 })
 export class AuthenticateModule { }
