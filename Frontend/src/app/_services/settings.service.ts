@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 export class SettingsService {
 
   
-  private url = "http://localhost:5000";
+  private url = "http://90.0.0.101:5000";
   private localStorage = window.localStorage;
 
   getUrl()

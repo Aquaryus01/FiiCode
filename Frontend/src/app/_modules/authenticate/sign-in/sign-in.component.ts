@@ -32,11 +32,14 @@ export class SignInComponent implements OnInit {
           console.log(res);
           if(res['status']==true)
           {
-              this.settings.setToken(res['values'].token);
+              
+              this.settings.setToken(res['values'].jwt);
               this.router.navigate(['/']);
           }
           else if(res['status']==false)
           {
+            console.log(
+              );  
               this.no_auth = true;
           }
           

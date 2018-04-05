@@ -21,8 +21,8 @@ export class SignUpComponent implements OnInit {
     private router: Router) { 
       this.rForm = fb.group({
         'email'  : [null, Validators.email],
-        'firstName'  : [null, Validators.required],
-        'lastName'  : [null, Validators.required],
+        'first_name'  : [null, Validators.required],
+        'last_name'  : [null, Validators.required],
         'password'  : [null, Validators.compose([Validators.required, Validators.minLength(8)])],
       })
   }
@@ -30,16 +30,15 @@ export class SignUpComponent implements OnInit {
   register(Post){
     var parameter = JSON.stringify(Post);
     this.rForm.reset();
-    this.no_auth = true;
-    this.user.login(parameter).subscribe(
+    this.user.register(parameter).subscribe(
         res => {
           console.log(res);
-          if(res['response']==true)
+          if(res['status']==true)
           {
-              this.settings.setToken(res['Token']);
+              this.settings.setToken(res['values'].jwt);
               this.router.navigate(['/']);
           }
-          else if(res['response']==false)
+          else if(res['status']==false)
           {
               this.no_auth = true;
           }
