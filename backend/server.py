@@ -5,6 +5,7 @@ import json
 from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
 from passlib.hash import sha256_crypt
+import pickle
 
 app = Flask(__name__)
 CORS(app, support_credentials=True)
@@ -54,6 +55,48 @@ def check():
     data = request.get_json(force=True)
     try:
         jwt.decode(data, jwt_key)
+        return json.dumps({'status': True})
+    except:
+        return json.dumps({'status': False})
+
+@app.route('/get_allergies', methods=['POST'])
+def get_allergies():
+    data = request.get_json(force=True)
+
+    try:
+        decoded = jwt.decode(data['jwt'], jwt_key)
+    except:
+        return json.dumps({'status': False})
+
+    c.execute('SELECT allergy_id, name, description from allergies')
+    lines = c.fetchall()
+
+    c.execute('SELECT allergy_id FROM user_allergies WHERE user_id=?', (decoded['user_id'],))
+    allergies = []
+    a = c.fetchall()
+    for al in a:
+        allergies.append(al[0])
+
+    to_send = []
+    for line in lines:
+        if line[0] in allergies:
+            to_send.append({'id': line[0], 'title': line[1], 'description': line[2], 'check': True})
+        else:
+            to_send.append({'id': line[0], 'title': line[1], 'description': line[2], 'check': False})
+    return json.dumps(to_send)
+
+@app.route('/check_allergy', methods=['POST'])
+def check_allergy():
+    data = request.get_json(force=True)
+    try:
+        decoded = jwt.decode(data['jwt'], jwt_key)
+        if int(data['checked']) == 1:
+            c.execute('INSERT INTO user_allergies (allergy_id, user_id) VALUES (?, ?)',
+                      (data['id'], decoded['user_id']))
+        elif int(data['checked']) == 0:
+            c.execute('DELETE FROM user_allergies WHERE allergy_id=? AND user_id=?',
+                      (data['id'], decoded['user_id']))
+        con.commit()
         return json.dumps({'status': True})
     except:
         return json.dumps({'status': False})
