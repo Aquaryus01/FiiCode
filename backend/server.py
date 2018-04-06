@@ -49,5 +49,14 @@ def register():
     except Exception as e:
         return json.dumps({'status': False, 'message': 'Email already in use'})
 
+@app.route('/check', methods=['POST'])
+def check():
+    data = request.get_json(force=True)
+    try:
+        jwt.decode(data, jwt_key)
+        return json.dumps({'status': True})
+    except:
+        return json.dumps({'status': False})
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
