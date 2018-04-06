@@ -68,7 +68,7 @@ def get_allergies():
     except:
         return json.dumps({'status': False})
 
-    c.execute('SELECT allergy_id, name, description from allergies')
+    c.execute('SELECT allergy_id, name, description, image from allergies')
     lines = c.fetchall()
 
     c.execute('SELECT allergy_id FROM user_allergies WHERE user_id=?', (decoded['user_id'],))
@@ -80,9 +80,9 @@ def get_allergies():
     to_send = []
     for line in lines:
         if line[0] in allergies:
-            to_send.append({'id': line[0], 'title': line[1], 'description': line[2], 'check': True})
+            to_send.append({'id': line[0], 'title': line[1], 'description': line[2], 'check': True, 'image': line[3]})
         else:
-            to_send.append({'id': line[0], 'title': line[1], 'description': line[2], 'check': False})
+            to_send.append({'id': line[0], 'title': line[1], 'description': line[2], 'check': False, 'image': line[3]})
     return json.dumps(to_send)
 
 @app.route('/check_allergy', methods=['POST'])
