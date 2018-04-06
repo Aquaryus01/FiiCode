@@ -9,6 +9,8 @@ import {AuthGuard} from './_guards/auth.guard';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule} from '@angular/forms';
 import { NavbarComponent } from './navbar/navbar.component';
+import { CardsComponent } from './main/cards/cards.component';
+import { CardComponent } from './main/cards/card/card.component';
 
 const appRoutes: Routes = [
   { path: '', component:  MainComponent, canActivate: [AuthGuard]}
@@ -24,7 +26,7 @@ const appRoutes: Routes = [
     FormsModule,
     NgbModule.forRoot()
   ],
-  declarations: [MainComponent, NavbarComponent],
+  declarations: [MainComponent, NavbarComponent, CardsComponent, CardComponent],
   providers: [AuthGuard]
 })
 export class MainModule { }
