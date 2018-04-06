@@ -6,6 +6,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import {AuthGuard} from './_guards/auth.guard';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import { FormsModule} from '@angular/forms';
+import { NavbarComponent } from './navbar/navbar.component';
 
 const appRoutes: Routes = [
   { path: '', component:  MainComponent, canActivate: [AuthGuard]}
@@ -17,9 +20,11 @@ const appRoutes: Routes = [
     RouterModule.forRoot(appRoutes),
     BrowserModule,
     HttpClientModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FormsModule,
+    NgbModule.forRoot()
   ],
-  declarations: [MainComponent],
+  declarations: [MainComponent, NavbarComponent],
   providers: [AuthGuard]
 })
 export class MainModule { }

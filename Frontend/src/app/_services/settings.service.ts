@@ -1,11 +1,15 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class SettingsService {
 
   
-  private url = "http://90.0.0.101:5000";
+  private url = "http://90.0.0.112:5000";
   private localStorage = window.localStorage;
+
+  constructor(private http: HttpClient) { }
 
   getUrl()
   {
@@ -21,7 +25,4 @@ export class SettingsService {
   {
     this.localStorage.setItem('key', str);
   }
-  
-  constructor() { }
-
 }
