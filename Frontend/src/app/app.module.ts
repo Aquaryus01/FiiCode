@@ -9,6 +9,8 @@ import {UserService} from './_services/user.service'
 
 import { HttpClientModule } from '@angular/common/http';
 import { MainModule } from './_modules/main/main.module';
+import { NgModel } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -17,7 +19,7 @@ import { MainModule } from './_modules/main/main.module';
   imports: [
     AuthenticateModule,
     MainModule,
-
+    FormsModule, ReactiveFormsModule,
     BrowserModule,
     RouterModule,
     HttpClientModule
