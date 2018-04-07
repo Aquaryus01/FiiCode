@@ -1,0 +1,29 @@
+.default-text{
+    color: white;
+    background-color: gray;
+}
+
+.all-text{
+    color: white;
+    background-color: black;
+}
+
+.spring-text{
+    color: white;
+    background-color: green;
+}
+
+.summer-text{
+    color: white;
+    background-color: orange;
+}
+
+.autumn-text{
+    color: white;
+    background-color: brown;
+}
+
+.winter-text{
+    color: white;
+    background-color: rgb(1,2,3);
+}

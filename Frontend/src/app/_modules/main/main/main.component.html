@@ -9,4 +9,24 @@ background-size: cover;">
   <h1 class="display-4" style="color: white">SkipAllergy</h1>
   <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
 </div>
-<app-cards></app-cards>
+
+<div class="container">
+  <ul style="color:white" class="option-set margin-bottom-30">
+    <li (click)="filter=1"><a [ngClass]="{
+      'all-text': filter === 1,
+      'default-text': filter !== 1}">All</a></li>
+    <li (click)="filter=2"><a  [ngClass]="{
+      'spring-text': filter === 2,
+      'default-text': filter !== 2}"data-filter=".first-filter">Spring</a></li>
+    <li (click)="filter=3"><a  [ngClass]="{
+      'summer-text': filter === 3,
+      'default-text': filter !== 3}"data-filter=".second-filter">Summer</a></li>
+    <li (click)="filter=4"><a  [ngClass]="{
+      'autumn-text': filter === 4,
+      'default-text': filter !== 4}"data-filter=".third-filter">Autumn</a></li>
+    <li (click)="filter=5"><a  [ngClass]="{
+      'winter-text': filter === 5,
+      'default-text': filter !== 5}"data-filter=".third-filter">Winter</a></li>
+  </ul>
+  <app-cards></app-cards>
+</div>
