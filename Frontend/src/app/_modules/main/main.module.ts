@@ -12,6 +12,10 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { CardsComponent } from './main/cards/cards.component';
 import { CardComponent } from './main/cards/card/card.component';
 import { StartPageComponent } from './start-page/start-page.component';
+import { PostsComponent } from './start-page/posts/posts.component';
+import { PostComponent } from './start-page/posts/post/post.component';
+import { AddPostsComponent } from './start-page/add-posts/add-posts.component';
+import { WeatherComponent } from './weather/weather.component';
 
 const appRoutes: Routes = [
   { path: 'allergy', component:  MainComponent, canActivate: [AuthGuard]},
@@ -28,7 +32,7 @@ const appRoutes: Routes = [
     FormsModule,
     NgbModule.forRoot()
   ],
-  declarations: [MainComponent, NavbarComponent, CardsComponent, CardComponent, StartPageComponent],
+  declarations: [MainComponent, NavbarComponent, CardsComponent, CardComponent, StartPageComponent, PostsComponent, PostComponent, AddPostsComponent, WeatherComponent],
   providers: [AuthGuard]
 })
 export class MainModule { }

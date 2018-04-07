@@ -1,54 +1,6 @@
 <app-navbar></app-navbar>
-
-<div class="jumbotron" style="color: white; background-image:url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR5LPnujFq63LheWafycDGHYn8-cFMKebBKRuGLImLwPFsCVBI-') !important; background-position: center;
-background-repeat: no-repeat;
-background-size: cover;">
-  <h1 class="display-4" style="color: white">SkipAllergy</h1>
-  <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
+<app-weather></app-weather>
+<div class="container" style="margin-bottom: 100px">
+  <app-add-posts></app-add-posts>
+  <app-posts></app-posts>
 </div>
-
-<div class="container">
-  <div class="row"> 
-      <div class="col-md-4">
-          <div class="card">
-            <div class="card-body">
-              <div class="text-muted text-left mb-2" style="font-size:20px">
-                  <i class="fas fa-sun fa-spin text-right" style="font-size: 30px; color: orange"></i>
-                  <small class="text-muted text-uppercase font-weight-bold">Temperature</small>
-              </div>
-              <div class="h4 mb-0">{{temperature}} &#8451;</div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="col-md-4">
-          <div class="card">
-            <div class="card-body">
-              <div class="text-muted text-left mb-2" style="font-size:20px">
-                  <i class="fas fa-cloud" style="font-size: 30px; color:  	#87CEEB"></i>
-                  <small class="text-muted text-uppercase font-weight-bold">Wind</small>
-              </div>
-              <div class="h4 mb-0">{{wind}}</div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="col-md-4">
-          <div class="card">
-            <div class="card-body">
-              <div class="text-muted text-left mb-2" style="font-size:20px">
-                  <i class="fas fa-thermometer-three-quarters" style="font-size: 30px; color:  	#87CEEB"></i>
-                  <small class="text-muted text-uppercase font-weight-bold">Humidity</small>
-              </div>
-              <div class="h4 mb-0">{{humidity}}</div>
-            </div>
-          </div>
-        </div>
-    </div>
-    <hr>
-    <h1>Seasonal allergies</h1>
-    <h4 style="display:inline;"> City: Brasov </h4>
-    <i style="display:inline; font-size:20px" class="fas fa-angle-right"></i>
-    <h4 style="display:inline;"> Season: Spring</h4>
-</div>
-
