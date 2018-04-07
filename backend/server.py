@@ -2,10 +2,11 @@
 import sqlite3
 import jwt
 import json
-from flask import Flask, request, jsonify, make_response
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 from passlib.hash import sha256_crypt
 import requests
+import datetime
 
 app = Flask(__name__)
 CORS(app, support_credentials=True)
@@ -15,6 +16,14 @@ api_key = '8381130a53e784ba31a2d4fbc8e16ede'
 
 con = sqlite3.connect('data.db')
 c = con.cursor()
+
+def get_date():
+    day = datetime.datetime.now().day
+    months = ['Ianuarie', 'Februarie', 'Martie', 'Aprilie', 'Mai', 'Iunie', 'Iulie', 'August', 'Septembrie', 'Octombrie',
+              'Noiembrie', 'Decembrie']
+    month = months[datetime.datetime.now().month - 1]
+    year = datetime.datetime.now().year
+    return '{} {} {}'.format(day, month, year)
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -109,6 +118,92 @@ def get_weather():
     return json.dumps({'temperature': round(values['main']['temp'] - 273, 2),
                        'humidity': str(values['main']['humidity']) + '%',
                        'wind': 'Speed: ' + str(values['wind']['speed']) + ' km/h'})
+
+@app.route('/add_post', methods=['POST'])
+def add_post():
+    data = request.get_json(force=True)
+    try:
+        jwt.decode(data['jwt'], jwt_key)
+
+        is_image = True
+        try:
+            x = data['image']
+        except:
+            is_image = False
+
+        if is_image:
+            c.execute('INSERT INTO posts (title, description, image, date) VALUES (?, ?, ?, ?)',
+                      (data['title'], data['description'], data['image'], get_date()))
+        else:
+            c.execute('INSERT INTO posts (title, description, date) VALUES (?, ?, ?)',
+                      (data['title'], data['description'], get_date()))
+        con.commit()
+
+        c.execute('SELECT post_id FROM posts')
+        post_id = c.fetchall()[-1][0]
+        print(post_id)
+
+        for tag in data['tags']:
+            c.execute('INSERT INTO post_allergy (post_id, allergy_id) VALUES (?, ?)', (post_id, tag))
+            con.commit()
+
+        return jsonify({'status': True})
+    except:
+        return jsonify({'status': False})
+
+@app.route('/get_posts', methods=['POST'])
+def get_posts():
+    data = request.get_json(force=True)
+    try:
+        jwt.decode(data['jwt'], jwt_key)
+
+        tags_bool = True
+        try:
+            x = data['tags']
+        except:
+            tags_bool = False
+
+        to_send = []
+
+        if tags_bool:
+            for tag in data['tags']:
+                c.execute('SELECT post_id FROM post_allergy where allergy_id=?', (tag,))
+                lines = c.fetchall()
+                for line in lines:
+                    post_id = line[0]
+                    c.execute('SELECT * FROM posts WHERE post_id=?', (post_id,))
+                    l = c.fetchone()
+                    to_send.append({'id': l[0], 'title': l[1], 'description': l[2],
+                                    'image': l[3], 'date': l[4], 'comments': l[5]})
+        else:
+            c.execute('SELECT * FROM posts')
+            lines = c.fetchall()
+            for line in lines:
+                to_send.append({'id': line[0], 'title': line[1], 'description': line[2],
+                                'image': line[3], 'date': line[4], 'comments': line[5]})
+        return jsonify(to_send)
+    except:
+        return jsonify({'status': False})
+
+@app.route('/post_comment', methods=['POST'])
+def post_comment():
+    data = request.get_json(force=True)
+    try:
+        decoded = jwt.decode(data['jwt'], jwt_key)
+
+        c.execute('INSERT INTO comments (post_id, user_id, comment) VALUES (?, ?, ?)',
+                  (data['id'], decoded['user_id'], data['comment']))
+        con.commit()
+
+        c.execute('SELECT comments_nr FROM posts WHERE post_id=?', (data['id'],))
+        comm_nr = c.fetchone()[0] + 1
+
+        c.execute('UPDATE posts SET comments_nr = ? WHERE post_id = ?', (comm_nr, data['id']))
+        con.commit()
+
+        return jsonify({'status': True})
+    except:
+        return jsonify({'status': False})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
