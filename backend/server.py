@@ -5,12 +5,13 @@ import json
 from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
 from passlib.hash import sha256_crypt
-import pickle
+import requests
 
 app = Flask(__name__)
 CORS(app, support_credentials=True)
 
 jwt_key = 'OQU6kcW1J0Y0jG9uVnU5hznryLm1df7bMvuM30GY8Im6_RsmMv5fvW5pcft1QFYk'
+api_key = '8381130a53e784ba31a2d4fbc8e16ede'
 
 con = sqlite3.connect('data.db')
 c = con.cursor()
@@ -100,6 +101,14 @@ def check_allergy():
         return json.dumps({'status': True})
     except:
         return json.dumps({'status': False})
+
+@app.route('/get_weather', methods=['GET'])
+def get_weather():
+    r = requests.get('http://api.openweathermap.org/data/2.5/weather?q=brasov&appid=' + api_key)
+    values = r.json()
+    return json.dumps({'temperature': round(values['main']['temp'] - 273, 2),
+                       'humidity': str(values['main']['humidity']) + '%',
+                       'wind': 'Speed: ' + str(values['wind']['speed']) + ' km/h'})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
