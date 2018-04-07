@@ -11,9 +11,11 @@ import { FormsModule} from '@angular/forms';
 import { NavbarComponent } from './navbar/navbar.component';
 import { CardsComponent } from './main/cards/cards.component';
 import { CardComponent } from './main/cards/card/card.component';
+import { StartPageComponent } from './start-page/start-page.component';
 
 const appRoutes: Routes = [
-  { path: '', component:  MainComponent, canActivate: [AuthGuard]}
+  { path: 'allergy', component:  MainComponent, canActivate: [AuthGuard]},
+   {path: '', component:  StartPageComponent, canActivate: [AuthGuard]}
 ];
 
 @NgModule({
@@ -26,7 +28,7 @@ const appRoutes: Routes = [
     FormsModule,
     NgbModule.forRoot()
   ],
-  declarations: [MainComponent, NavbarComponent, CardsComponent, CardComponent],
+  declarations: [MainComponent, NavbarComponent, CardsComponent, CardComponent, StartPageComponent],
   providers: [AuthGuard]
 })
 export class MainModule { }

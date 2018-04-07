@@ -23,8 +23,10 @@ export class MainComponent implements OnInit {
   constructor() { }
   
   ngOnInit() {
-    
   }
+
+  filter: number = 1;
+  
   model: any;
   search = (text$: Observable<string>) =>
     text$
@@ -32,4 +34,14 @@ export class MainComponent implements OnInit {
       .distinctUntilChanged()
       .map(term => term.length < 1 ? []
         : states.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10));
+
+        getColor()
+        {
+          return "red";
+        }
+
+        getBgColor()
+        {
+          return "red";
+        }
 }
