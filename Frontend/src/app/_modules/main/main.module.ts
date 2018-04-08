@@ -20,12 +20,14 @@ import { SearchBarComponent } from './start-page/search-bar/search-bar.component
 import { QuestionComponent } from './start-page/question/question.component';
 import { PopularPostsComponent } from './start-page/popular-posts/popular-posts.component';
 import { PostService } from './start-page/_services/post.service';
+import { ChatComponent } from './chat/chat.component';
 
 
 
 const appRoutes: Routes = [
   { path: 'allergy', component:  MainComponent, canActivate: [AuthGuard]},
-   {path: '', component:  StartPageComponent, canActivate: [AuthGuard]}
+  { path: '', component:  StartPageComponent, canActivate: [AuthGuard]},
+  { path: 'chat', component:  ChatComponent, canActivate: [AuthGuard]}
 ];
 
 @NgModule({
@@ -38,7 +40,7 @@ const appRoutes: Routes = [
     FormsModule,
     NgbModule.forRoot()
   ],
-  declarations: [MainComponent, NavbarComponent, CardsComponent, CardComponent, StartPageComponent, PostsComponent, PostComponent, AddPostsComponent, WeatherComponent, SearchBarComponent, QuestionComponent, PopularPostsComponent],
+  declarations: [MainComponent, NavbarComponent, CardsComponent, CardComponent, StartPageComponent, PostsComponent, PostComponent, AddPostsComponent, WeatherComponent, SearchBarComponent, QuestionComponent, PopularPostsComponent, ChatComponent],
   providers: [AuthGuard, PostService]
 })
 export class MainModule { }
