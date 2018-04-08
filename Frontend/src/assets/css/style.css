@@ -5338,7 +5338,7 @@ a.read-more i {
 .search-blog-input { position: relative; }
 
 .widget .search-blog-input .input:before {
-	content: "\e090";
+	content: "\1F50D";
 	font-size: 17px;
 	color: #a0a0a0;
 	position: absolute;

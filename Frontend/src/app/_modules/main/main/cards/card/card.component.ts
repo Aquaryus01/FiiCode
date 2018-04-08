@@ -14,7 +14,7 @@ export class CardComponent implements OnInit {
               private settings: SettingsService) { }
 
   ngOnInit() {
-    console.log(this.card.title);
+    //console.log(this.card.title);
     /*if(this.card.check)
     {
       document.getElementById("checkbox").= true;
