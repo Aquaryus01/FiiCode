@@ -1,6 +1,23 @@
 <app-navbar></app-navbar>
 <app-weather></app-weather>
 <div class="container" style="margin-bottom: 100px">
-  <app-add-posts></app-add-posts>
-  <app-posts></app-posts>
+
+  <div class="col-lg-9 col-md-8 padding-right-30">
+    <app-add-posts></app-add-posts>
+    <app-posts></app-posts>
+  </div>
+
+  <div class="col-lg-3 col-md-4">
+    <div class="sidebar right">
+      <app-search-bar></app-search-bar>
+      <app-question></app-question>
+      <app-popular-posts></app-popular-posts>
+
+      <div class="clearfix"></div>
+      <div class="margin-bottom-40"></div>
+    </div>
+  </div>
+  
 </div>
+
+
