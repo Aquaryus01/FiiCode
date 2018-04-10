@@ -17,6 +17,13 @@ api_key = '8381130a53e784ba31a2d4fbc8e16ede'
 con = sqlite3.connect('data.db')
 c = con.cursor()
 
+def check_jwt(jwt):
+    try:
+        decoded = jwt.decode(jwt, jwt_key)
+        return jwt
+    except:
+        return False
+
 def get_date():
     day = datetime.datetime.now().day
     months = ['Ianuarie', 'Februarie', 'Martie', 'Aprilie', 'Mai', 'Iunie', 'Iulie', 'August', 'Septembrie', 'Octombrie',
@@ -243,6 +250,22 @@ def get_comments():
                             'mine': mine, 'date': line[4], 'id': line[5]})
 
         return jsonify(to_send)
+
+@app.route('/delete_comment', methods=['POST'])
+def delete_comment():
+    data = request.get_json(force=True)
+
+    try:
+        decoded = jwt.decode(data['jwt'], jwt_key)
+    except:
+        return jsonify({'status': False})
+
+    c.execute('DELETE FROM comments WHERE comment_id=?', data['id'])
+    con.commit()
+
+    return jsonify({'status': True})
+
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
