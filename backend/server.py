@@ -260,7 +260,8 @@ def delete_comment():
     except:
         return jsonify({'status': False})
 
-    c.execute('DELETE FROM comments WHERE comment_id=?', data['id'])
+    c.execute('DELETE FROM comments WHERE comment_id=?', (data['id'],))
+    # c.execute('UPDATE')
     con.commit()
 
     return jsonify({'status': True})
