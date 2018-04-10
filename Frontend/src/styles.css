@@ -1,24 +1,24 @@
 /* You can add global styles to this file, and also import other style files */
 .bg_yellow{
-    background-color: #fff1d0;
+    background-color: #fff1d0 !important;
 }
 
 .btn-red {
-    color: #fff;
-    background-color: #d43838;
-    border-color: #d43838;
+    color: #fff !important;
+    background-color: #d43838 !important;
+    border-color: #d43838 !important;
 }
 
 .btn-blue {
-    color: #fff;
-    background-color: #1d7874;
-    border-color: #1d7874;
+    color: #fff !important;
+    background-color: #1d7874 !important;
+    border-color: #1d7874 !important;
 }
 
 .btn-green {
-    color: #fff;
-    background-color: #a8c256;
-    border-color: #a8c256;
+    color: #fff !important;
+    background-color: #a8c256 !important;
+    border-color: #a8c256 !important;
 }
 
 .btn-red:disabled {
@@ -42,5 +42,8 @@
     opacity: 50%;
 }
 
+.btn{
+    font-size: 1.5rem;
+}
 
 

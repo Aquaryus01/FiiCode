@@ -9,4 +9,35 @@
     </ul>
     <p>{{post.description}}</p>
     <a href="pages-blog-post.html" class="read-more">Read More <i class="fa fa-angle-right"></i></a>
+    <a (click)="comments_bool = !comments_bool" style="margin-left: 20px; cursor: pointer;" class="read-more">Comments <i class="fa fa-angle-down"></i></a>
+
+    
+    <section *ngIf="comments_bool" class="comments">
+
+        <br>
+        <div>
+            <textarea [(ngModel)]="comment" cols="40" rows="3"></textarea>
+        </div>
+
+
+
+        <button (click)="addPost()" class="button">Submit Comment</button>
+        <div class="clearfix"></div>
+
+
+        <h4 class="headline margin-bottom-35">Comments <span class="comments-amount">{{comments.length}}</span></h4>
+            <ul>
+                <!-- <li *ngFor="let comment of comments"> -->
+                <li>
+                    <div class="avatar"><img src="http://www.gravatar.com/avatar/00000000000000000000000000000000?d=mm&amp;s=70" alt=""></div>
+                    <div class="comment-content"><div class="arrow-comment"></div>
+                        <div class="comment-by">Alex Benchea{{comment.name}}<span class="date">15 Aprilie 2018{{comment.date}}</span>
+                            <a href="#" class="reply"><i class="fas fa-times"></i></a>
+                        </div>
+                        <p>Am patit, dar nu este ceva foarte grav, trece cu crema protectoare!{{comment.comment}}</p>
+                    </div>
+                </li>
+            </ul>        
+    </section>
 </div>
+

@@ -21,7 +21,7 @@ import { QuestionComponent } from './start-page/question/question.component';
 import { PopularPostsComponent } from './start-page/popular-posts/popular-posts.component';
 import { PostService } from './start-page/_services/post.service';
 import { ChatComponent } from './chat/chat.component';
-
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
 const appRoutes: Routes = [
@@ -38,7 +38,8 @@ const appRoutes: Routes = [
     HttpClientModule,
     ReactiveFormsModule,
     FormsModule,
-    NgbModule.forRoot()
+    NgbModule.forRoot(),
+    BrowserAnimationsModule
   ],
   declarations: [MainComponent, NavbarComponent, CardsComponent, CardComponent, StartPageComponent, PostsComponent, PostComponent, AddPostsComponent, WeatherComponent, SearchBarComponent, QuestionComponent, PopularPostsComponent, ChatComponent],
   providers: [AuthGuard, PostService]
