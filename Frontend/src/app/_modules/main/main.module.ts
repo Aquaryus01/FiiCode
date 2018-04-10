@@ -22,6 +22,7 @@ import { PopularPostsComponent } from './start-page/popular-posts/popular-posts.
 import { PostService } from './start-page/_services/post.service';
 import { ChatComponent } from './chat/chat.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CommentComponent } from './start-page/posts/post/comment/comment.component';
 
 
 const appRoutes: Routes = [
@@ -41,7 +42,7 @@ const appRoutes: Routes = [
     NgbModule.forRoot(),
     BrowserAnimationsModule
   ],
-  declarations: [MainComponent, NavbarComponent, CardsComponent, CardComponent, StartPageComponent, PostsComponent, PostComponent, AddPostsComponent, WeatherComponent, SearchBarComponent, QuestionComponent, PopularPostsComponent, ChatComponent],
+  declarations: [MainComponent, NavbarComponent, CardsComponent, CardComponent, StartPageComponent, PostsComponent, PostComponent, AddPostsComponent, WeatherComponent, SearchBarComponent, QuestionComponent, PopularPostsComponent, ChatComponent, CommentComponent],
   providers: [AuthGuard, PostService]
 })
 export class MainModule { }

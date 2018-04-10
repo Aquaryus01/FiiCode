@@ -253,6 +253,7 @@ def get_comments():
 
 @app.route('/delete_comment', methods=['POST'])
 def delete_comment():
+    print('sad')
     data = request.get_json(force=True)
 
     try:

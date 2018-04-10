@@ -6,7 +6,7 @@ import { Observable } from 'rxjs/Observable';
 export class SettingsService {
 
   
-  private url = "http://90.0.0.111:5000";
+  private url = "http://192.168.1.152:5000";
   private localStorage = window.localStorage;
 
   constructor(private http: HttpClient) { }

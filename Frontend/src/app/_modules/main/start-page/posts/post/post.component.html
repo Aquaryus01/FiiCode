@@ -5,7 +5,7 @@
     <h3><a href="pages-blog-post.html">{{post.title}}</a></h3>
     <ul class="post-meta">
         <li>{{post.date}}</li>
-        <li><a href="#">{{post.comments}} Comments</a></li>
+        <li><a href="#">{{comments.length}} Comments</a></li>
     </ul>
     <p>{{post.description}}</p>
     <a href="pages-blog-post.html" class="read-more">Read More <i class="fa fa-angle-right"></i></a>
@@ -21,20 +21,19 @@
 
 
 
-        <button (click)="addPost()" class="button">Submit Comment</button>
+        <button (click)="addComment()" class="button">Submit Comment</button>
         <div class="clearfix"></div>
 
-
+        <!-- <app-comment [post]='post' [post]='post'></app-coment> -->
         <h4 class="headline margin-bottom-35">Comments <span class="comments-amount">{{comments.length}}</span></h4>
             <ul>
-                <!-- <li *ngFor="let comment of comments"> -->
-                <li>
+                <li *ngFor="let comment of comments">
                     <div class="avatar"><img src="http://www.gravatar.com/avatar/00000000000000000000000000000000?d=mm&amp;s=70" alt=""></div>
                     <div class="comment-content"><div class="arrow-comment"></div>
-                        <div class="comment-by">Alex Benchea{{comment.name}}<span class="date">15 Aprilie 2018{{comment.date}}</span>
-                            <a href="#" class="reply"><i class="fas fa-times"></i></a>
+                        <div class="comment-by">{{comment.name}}<span class="date">{{comment.date}}</span>
+                            <a (click)="removeComment(comment)" class="reply"><i class="fas fa-times"></i></a>
                         </div>
-                        <p>Am patit, dar nu este ceva foarte grav, trece cu crema protectoare!{{comment.comment}}</p>
+                        <p>{{comment.comment}}</p>
                     </div>
                 </li>
             </ul>        
