@@ -123,7 +123,7 @@ def get_weather():
 def add_post():
     data = request.get_json(force=True)
     try:
-        jwt.decode(data['jwt'], jwt_key)
+        decoded = jwt.decode(data['jwt'], jwt_key)
 
         is_image = True
         try:
@@ -132,20 +132,20 @@ def add_post():
             is_image = False
 
         if is_image:
-            c.execute('INSERT INTO posts (title, description, image, date) VALUES (?, ?, ?, ?)',
-                      (data['title'], data['description'], data['image'], get_date()))
+            c.execute('INSERT INTO posts (user_id, title, description, image, date) VALUES (?, ?, ?, ?, ?)',
+                      (decoded['user_id'], data['title'], data['description'], data['image'], get_date()))
         else:
-            c.execute('INSERT INTO posts (title, description, date) VALUES (?, ?, ?)',
-                      (data['title'], data['description'], get_date()))
+            c.execute('INSERT INTO posts (user_id, title, description, date) VALUES (?, ?, ?, ?)',
+                      (decoded['user_id'], data['title'], data['description'], get_date()))
         con.commit()
 
         c.execute('SELECT post_id FROM posts')
         post_id = c.fetchall()[-1][0]
         print(post_id)
 
-        for tag in data['tags']:
-            c.execute('INSERT INTO post_allergy (post_id, allergy_id) VALUES (?, ?)', (post_id, tag))
-            con.commit()
+        # for tag in data['tags']:
+        #     c.execute('INSERT INTO post_allergy (post_id, allergy_id) VALUES (?, ?)', (post_id, tag))
+        #     con.commit()
 
         return jsonify({'status': True})
     except:
@@ -204,6 +204,36 @@ def post_comment():
         return jsonify({'status': True})
     except:
         return jsonify({'status': False})
+
+@app.route('/get_comments', methods=['POST'])
+def get_comments():
+    data = request.get_jspn(force=True)
+    try:
+        decoded = jwt.decode(data['jwt'], jwt_key)
+    except:
+        return jsonify({'status': False})
+
+    c.execute('SELECT comments_nr FROM posts WHERE post_id=?', (data['id'],))
+
+    nr = c.fetchone()[0]
+    if int(nr) == 0:
+        return jsonify({'status': False, 'message': 'No comments'})
+    else:
+        to_send = []
+
+        c.execute('SELECT comments.user_id, last_name, first_name, comment FROM posts\
+        INNER JOIN comments ON posts.post_id=comments.post_id\
+         INNER JOIN users ON posts.user_id=users.user_id WHERE posts.post_id=?', (data['id'],))
+        lines = c.fetchall()
+
+        for line in lines:
+            if decoded['user_id'] == line[0]:
+                mine = True
+            else:
+                mine = False
+            to_send.append({'name': '{} {}'.format(line[1], line[2]), 'comment': line[3], 'mine': mine})
+
+        return jsonify(to_send)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
