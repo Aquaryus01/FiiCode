@@ -176,11 +176,13 @@ def get_posts():
                     to_send.append({'id': l[0], 'title': l[1], 'description': l[2],
                                     'image': l[3], 'date': l[4], 'comments': l[5]})
         else:
-            c.execute('SELECT * FROM posts')
+            c.execute('SELECT post_id, title, description, image, date, comments_nr, last_name, first_name \
+            FROM posts INNER JOIN users ON posts.user_id = users.user_id')
             lines = c.fetchall()
             for line in lines:
                 to_send.append({'id': line[0], 'title': line[1], 'description': line[2],
-                                'image': line[3], 'date': line[4], 'comments': line[5]})
+                                'image': line[3], 'date': line[4], 'comments': line[5],
+                                'name': '{} {}'.format(line[6], line[7])})
         return jsonify(to_send)
     except:
         return jsonify({'status': False})
@@ -191,8 +193,8 @@ def post_comment():
     try:
         decoded = jwt.decode(data['jwt'], jwt_key)
 
-        c.execute('INSERT INTO comments (post_id, user_id, comment) VALUES (?, ?, ?)',
-                  (data['id'], decoded['user_id'], data['comment']))
+        c.execute('INSERT INTO comments (post_id, user_id, comment, date) VALUES (?, ?, ?, ?)',
+                  (data['id'], decoded['user_id'], data['comment'], get_date()))
         con.commit()
 
         c.execute('SELECT comments_nr FROM posts WHERE post_id=?', (data['id'],))
@@ -201,13 +203,19 @@ def post_comment():
         c.execute('UPDATE posts SET comments_nr = ? WHERE post_id = ?', (comm_nr, data['id']))
         con.commit()
 
-        return jsonify({'status': True})
+        c.execute('SELECT comments.user_id, last_name, first_name, comment, comments.date, comment_id FROM posts\
+                INNER JOIN comments ON posts.post_id=comments.post_id\
+                 INNER JOIN users ON posts.user_id=users.user_id WHERE posts.post_id=?', (data['id'],))
+        line = c.fetchall()[-1]
+
+        return jsonify({'name': '{} {}'.format(line[1], line[2]), 'comment': line[3],
+                            'mine': True, 'date': line[4], 'id': line[5]})
     except:
         return jsonify({'status': False})
 
 @app.route('/get_comments', methods=['POST'])
 def get_comments():
-    data = request.get_jspn(force=True)
+    data = request.get_json(force=True)
     try:
         decoded = jwt.decode(data['jwt'], jwt_key)
     except:
@@ -221,7 +229,7 @@ def get_comments():
     else:
         to_send = []
 
-        c.execute('SELECT comments.user_id, last_name, first_name, comment FROM posts\
+        c.execute('SELECT comments.user_id, last_name, first_name, comment, comments.date, comment_id FROM posts\
         INNER JOIN comments ON posts.post_id=comments.post_id\
          INNER JOIN users ON posts.user_id=users.user_id WHERE posts.post_id=?', (data['id'],))
         lines = c.fetchall()
@@ -231,7 +239,8 @@ def get_comments():
                 mine = True
             else:
                 mine = False
-            to_send.append({'name': '{} {}'.format(line[1], line[2]), 'comment': line[3], 'mine': mine})
+            to_send.append({'name': '{} {}'.format(line[1], line[2]), 'comment': line[3],
+                            'mine': mine, 'date': line[4], 'id': line[5]})
 
         return jsonify(to_send)
 
