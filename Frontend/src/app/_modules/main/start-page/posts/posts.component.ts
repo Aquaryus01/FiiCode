@@ -45,7 +45,7 @@ export class PostsComponent implements OnInit {
        //console.log(res['length']);
        for (var _i = 0; _i < res['length']; _i++)
        {
-         this.posts.push(res[_i]);
+         this.posts.unshift(res[_i]);
          //console.log(res[_i]);
        }
        //console.log(this.posts);
