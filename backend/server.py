@@ -120,7 +120,7 @@ def check_allergy():
 
 @app.route('/get_weather', methods=['GET'])
 def get_weather():
-    r = requests.get('http://api.openweathermap.org/data/2.5/weather?q=brasov&appid=' + api_key)
+    r = requests.get('http://api.openweathermap.org/data/2.5/weather?q=iasi&appid=' + api_key)
     values = r.json()
     return json.dumps({'temperature': round(values['main']['temp'] - 273, 2),
                        'humidity': str(values['main']['humidity']) + '%',
@@ -268,11 +268,16 @@ def delete_comment():
     return jsonify({'status': True})
 
 def robot_help():
-    return jsonify({'text': '/info [allergy]\n/pills [allergy]\n/drugstores\n/ask'})
+    return jsonify({'text': '/info [allergy]\n/pills [allergy]\n/drugstores\n/now\n/'})
 
 @app.route('/robot', methods=['POST'])
 def robot():
     data = request.get_json(force=True)
+
+    try:
+        decoded = jwt.decode(data['jwt'], jwt_key)
+    except:
+        return json.dumps({'status': False})
 
     if check_jwt(data['jwt']) == False:
         return jsonify('Invalid token!')
@@ -291,6 +296,14 @@ def robot():
             return robot_generic(data['command'].split(' ')[1:], 'pills')
         else:
             return jsonify({'text': 'Usage: /pills [allergy]'})
+
+    elif data['command'].lower() == '/drugstores':
+        return get_drugstores()
+
+    elif data['command'].lower() == '/now':
+        return robot_now()
+
+    return robot_help()
 
 
 def robot_generic(allergy, action):
@@ -377,6 +390,66 @@ def delete_allergy():
     con.commit()
 
     return jsonify({'status': True})
+
+def get_drugstores():
+    r = requests.get('https://freegeoip.net/json')
+    city = r.json()['city']
+
+    lat = r.json()['latitude']
+    lng = r.json()['longitude']
+
+    r = requests.get('https://maps.googleapis.com/maps/api/place/textsearch/json?query=drugstores+in+' + city +
+                     '&key=%20AIzaSyC4Y-QuysgsrsTOlHcumcJ4HOMCizFdEEI')
+
+    to_send = []
+    stores = r.json()
+    stores = stores['results']
+    for store in stores:
+        to_send.append({'latitude': store['geometry']['location']['lat'], 'longitude': store['geometry']['location']['lng']})
+
+    return jsonify({'check': 'map', 'stores': to_send, 'lat': lat, 'lon': lng})
+
+def robot_now():
+    now = get_date()
+    now = now.split(' ')[1]
+
+    if now == 'Ianuarie' or now == 'Februarie' or now == 'Decembrie':
+        c.execute('SELECT name FROM allergies WHERE season=?', ('winter',))
+        lines = c.fetchall()
+
+        to_send = ''
+        for line in lines:
+            to_send += line[0] + '\n'
+        return jsonify({'text': to_send})
+
+    elif now == 'Martie' or now == 'Aprilie' or now == 'Mai':
+        c.execute('SELECT name FROM allergies WHERE season=?', ('spring',))
+        lines = c.fetchall()
+
+        to_send = ''
+        for line in lines:
+            to_send += line[0] + '\n'
+        return jsonify({'text': to_send})
+
+    elif now == 'Iunie' or now == 'Iulie' or now == 'August':
+        c.execute('SELECT name FROM allergies WHERE season=?', ('summer',))
+        lines = c.fetchall()
+
+        to_send = ''
+        for line in lines:
+            to_send += line[0] + '\n'
+        return jsonify({'text': to_send})
+
+    elif now == 'Septembrie' or now == 'Octombrie' or now == 'Noiembrie':
+        c.execute('SELECT name FROM allergies WHERE season=?', ('autumn',))
+        lines = c.fetchall()
+
+        to_send = ''
+        for line in lines:
+            to_send += line[0] + '\n'
+        return jsonify({'text': to_send})
+
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
