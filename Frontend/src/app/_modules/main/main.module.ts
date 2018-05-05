@@ -24,6 +24,7 @@ import { ChatComponent } from './chat/chat.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CommentComponent } from './start-page/posts/post/comment/comment.component';
 import { AdminComponent } from './admin/admin.component';
+import { AgmCoreModule } from '@agm/core';
 
 const appRoutes: Routes = [
   { path: 'allergy', component:  MainComponent, canActivate: [AuthGuard]},
@@ -35,6 +36,8 @@ const appRoutes: Routes = [
 @NgModule({
   imports: [
     CommonModule,
+    AgmCoreModule.forRoot({
+      apiKey: 'AIzaSyASNBJxA0kqHfEdg5syku8Vn5qCVlwIy0Y'}),
     RouterModule.forRoot(appRoutes),
     BrowserModule,
     HttpClientModule,

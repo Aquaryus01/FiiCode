@@ -32,7 +32,7 @@ export class AdminComponent implements OnInit {
     parameter['jwt'] = this.settings.getToken();
     parameter['id'] = id;
     this.http.post(this.settings.getUrl() + "/validate_allergy", parameter).subscribe(res => {
-      
+      this.cards = [];
       this.http.post(this.settings.getUrl() + "/get_unrated", parameter).subscribe(res => {
         for (var _i = 0; _i < res['length']; _i++)
         {

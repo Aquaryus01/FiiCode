@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { SettingsService } from '../../../_services/settings.service';
 import { Chat} from '../_classes/chat';
+import {Size} from '../_classes/size';
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
@@ -10,22 +11,33 @@ import { Chat} from '../_classes/chat';
 export class ChatComponent implements OnInit {
 
   constructor(private http: HttpClient,
-              private settings: SettingsService) { }
+              private settings: SettingsService) 
+  { 
+      /*this.http.get(this.settings.getUrl() + '/').subscribe(res => {
+        console.log(res);
+      })*/
+  }
 
   message: string = "";
   comments: Chat[] = [];
   add_allergy_pop: boolean = false;
+  map: boolean = false;
+  sizes: Size[] = []; 
 
+  lat: number = 0;
+  lon: number = 0;
   ngOnInit() {
   }
 
   sendCommand(){
     //console.log(this.message);
+    this.map = false;
     var comentel = new Chat;
     comentel.text = this.message;
     comentel.user = true;
     this.comments.push(comentel);
     console.log(this.comments);
+
     
     var parameter = new Object;
     parameter['jwt'] = this.settings.getToken();
@@ -41,6 +53,16 @@ export class ChatComponent implements OnInit {
           comentel.allergy = res['allergy'];
           this.add_allergy_pop = true;
       }
+      else if(res['check'] == "map")
+      {
+        this.lat = res['lat'];
+        this.lon = res['lon'];
+        this.map = true;
+        for (let index = 0; index < res['stores'].length; index++) {
+          console.log(res['stores'][0]);
+          this.sizes.push(res['stores'][index]);
+        }
+      }
       else
       {
         comentel = new Chat;
@@ -51,6 +73,8 @@ export class ChatComponent implements OnInit {
         this.comments.push(comentel);
         console.log(this.comments);
       }
+
+      this.message = "";
     });
   }
 /*
@@ -89,4 +113,5 @@ var parameter = new Object;
     parameter = JSON.stringify(parameter);
     this.http.post(this.settings.getUrl() + '/add_allergy', parameter).subscribe(res => console.log(res));
   }
+
 }

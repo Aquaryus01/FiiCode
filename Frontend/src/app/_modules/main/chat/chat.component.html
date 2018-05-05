@@ -4,7 +4,7 @@
 
   <div class="messages-headline" style="margin-bottom: 3%">
     <h4>Robo Allergy</h4>
-    <a href="#" class="message-action"><i class="fas fa-ban"></i> Delete Conversation</a>
+    <!-- <a href="#" class="message-action"><i class="fas fa-ban"></i> Delete Conversation</a> -->
   </div>
 
   <div class="message-content" style="margin-bottom: 3%; height:238px; overflow: auto" >
@@ -20,10 +20,19 @@
         </div>
 
         <div *ngIf="!comment.user" class="message-bubble">
-            <div class="message-avatar"><img src="./assets/robot.png" alt=""></div>
-            <div style="white-space: pre-line" class="message-text"><p>{{comment.text}}</p></div>
-          </div>
+          <div class="message-avatar"><img src="./assets/robot.png" alt=""></div>
+          <div style="font-weight:bold; white-space: pre-line" class="message-text"><p>{{comment.text}}</p></div>
+        </div>
+          
+        
       </div>
+
+      <agm-map *ngIf="map" [latitude]=lat [zoom]='12' [longitude]=lon>
+        <div *ngFor="let size of sizes">
+          <agm-marker [latitude]=size.latitude [longitude]=size.longitude></agm-marker>
+        </div>
+        <agm-marker [latitude]=47.174532 [longitude]=27.577941></agm-marker>
+      </agm-map>
   </div>
 
 
@@ -65,6 +74,9 @@
       </div>
     </div>
   </div>
+
+
+    
 
 
     
