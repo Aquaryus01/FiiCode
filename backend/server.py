@@ -85,7 +85,7 @@ def get_allergies():
     except:
         return json.dumps({'status': False})
 
-    c.execute('SELECT allergy_id, name, description, image from allergies')
+    c.execute('SELECT allergy_id, name, description, image from allergies WHERE verified=1')
     lines = c.fetchall()
 
     c.execute('SELECT allergy_id FROM user_allergies WHERE user_id=?', (decoded['user_id'],))
@@ -148,11 +148,6 @@ def add_post():
 
         c.execute('SELECT post_id FROM posts')
         post_id = c.fetchall()[-1][0]
-        print(post_id)
-
-        # for tag in data['tags']:
-        #     c.execute('INSERT INTO post_allergy (post_id, allergy_id) VALUES (?, ?)', (post_id, tag))
-        #     con.commit()
 
         return jsonify({'status': True})
     except:
@@ -200,8 +195,6 @@ def post_comment():
     try:
         decoded = jwt.decode(data['jwt'], jwt_key)
 
-        print(data, decoded)
-
         c.execute('INSERT INTO comments (post_id, user_id, comment, date) VALUES (?, ?, ?, ?)',
                   (data['id'], decoded['user_id'], data['comment'], get_date()))
         con.commit()
@@ -216,8 +209,6 @@ def post_comment():
                 INNER JOIN comments ON posts.post_id=comments.post_id\
                  INNER JOIN users ON posts.user_id=users.user_id WHERE posts.post_id=?', (data['id'],))
         line = c.fetchall()[-1]
-
-        print(line)
 
         return jsonify({'name': '{} {}'.format(line[1], line[2]), 'comment': line[3],
                             'mine': True, 'date': line[4], 'id': line[5]})
@@ -244,11 +235,6 @@ def get_comments():
 
         lines = c.fetchall()
 
-        # c.execute('SELECT comments.user_id, last_name, first_name, comment, comments.date, comment_id FROM posts\
-        # INNER JOIN comments ON posts.post_id=comments.post_id\
-        #  INNER JOIN users ON posts.user_id=users.user_id WHERE posts.post_id=?', (data['id'],))
-        # lines = c.fetchall()
-
         for line in lines:
 
             c.execute('SELECT last_name, first_name FROM users WHERE user_id=?', (line[1],))
@@ -264,13 +250,11 @@ def get_comments():
                 mine = False
             to_send.append({'name': '{} {}'.format(l[0], l[1]), 'comment': line[2],
                             'mine': mine, 'date': line[3], 'id': line[0]})
-            print(to_send)
 
         return jsonify(to_send)
 
 @app.route('/delete_comment', methods=['POST'])
 def delete_comment():
-    print('sad')
     data = request.get_json(force=True)
 
     try:
@@ -279,7 +263,6 @@ def delete_comment():
         return jsonify({'status': False})
 
     c.execute('DELETE FROM comments WHERE comment_id=?', (data['id'],))
-    # c.execute('UPDATE')
     con.commit()
 
     return jsonify({'status': True})
@@ -295,16 +278,23 @@ def robot():
         return jsonify('Invalid token!')
 
     if data['command'].lower().split(' ')[0] == '/info':
-        return robot_generic(data['command'].split(' ')[1:], 'info')
+        if len(data['command'].split(' ')) > 1:
+            return robot_generic(data['command'].split(' ')[1:], 'info')
+        else:
+            return jsonify({'text': 'Usage: /info [allergy]'})
 
     elif data['command'].lower() == '/help':
         return robot_help()
 
     elif data['command'].lower().split(' ')[0] == '/pills':
-        return robot_generic(data['command'].split(' ')[1:], 'pills')
+        if len(data['command'].spli(' ')) > 1:
+            return robot_generic(data['command'].split(' ')[1:], 'pills')
+        else:
+            return jsonify({'text': 'Usage: /pills [allergy]'})
 
 
 def robot_generic(allergy, action):
+    aux = allergy
     try:
         allergy.remove('allergy')
     except:
@@ -317,8 +307,6 @@ def robot_generic(allergy, action):
     allergies = c.fetchall()
 
     for a in allergies:
-        # if a[1].lower() == allergy.lower():
-        #     return jsonify({'text': a[0]})
         a_words = a[1].lower().split(' ')
         try:
             a_words.remove('allergy')
@@ -328,18 +316,64 @@ def robot_generic(allergy, action):
             for aller in allergy:
                 if a_word == aller:
                     if action == 'info':
-                        return jsonify({'text': a[0], 'url': a[2]})
+                        return jsonify({'text': a[0], 'url': a[2], 'allergy': a[1]})
                     elif action == 'pills':
-                        return jsonify({'text': a[3], 'url': a[2]})
+                        return jsonify({'text': a[3], 'url': a[2], 'allergy': a[1]})
 
-    return jsonify({'check': 'add_allergy'})
+    return jsonify({'check': 'add_allergy', 'allergy': aux})
 
 @app.route('/add_allergy', methods=['POST'])
 def add_allergy():
     data = request.get_json(force=True)
 
     c.execute('INSERT INTO allergies (name, description, image, pills) VALUES (?, ?, ?, ?)',
-              (data['name'], data['description'], data['url'], data['pills']))
+              (data['name'], data['description'], 0, data['pills']))
+    con.commit()
+
+    return jsonify({'status': True})
+
+@app.route('/get_unrated', methods=['POST'])
+def get_unrated():
+    data = request.get_json(force=True)
+
+    try:
+        decoded = jwt.decode(data['jwt'], jwt_key)
+    except:
+        return json.dumps({'status': False})
+
+    c.execute('SELECT allergy_id, name, description, image from allergies WHERE verified=0')
+    lines = c.fetchall()
+
+    to_send = []
+    for line in lines:
+        to_send.append({'id': line[0], 'title': line[1], 'description': line[2], 'image': line[3]})
+
+    return json.dumps(to_send)
+
+@app.route('/validate_allergy', methods=['POST'])
+def validate_allergy():
+    data = request.get_json(force=True)
+
+    try:
+        decoded = jwt.decode(data['jwt'], jwt_key)
+    except:
+        return json.dumps({'status': False})
+
+    c.execute('UPDATE allergies SET verified=1 WHERE allergy_id=?', (data['id'],))
+    con.commit()
+
+    return jsonify({'status': True})
+
+@app.route('/delete_allergy', methods=['POST'])
+def delete_allergy():
+    data = request.get_json(force=True)
+
+    try:
+        decoded = jwt.decode(data['jwt'], jwt_key)
+    except:
+        return json.dumps({'status': False})
+
+    c.execute('DELETE FROM allergies WHERE allergy_id=?', (data['id'],))
     con.commit()
 
     return jsonify({'status': True})
