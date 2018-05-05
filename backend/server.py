@@ -17,10 +17,10 @@ api_key = '8381130a53e784ba31a2d4fbc8e16ede'
 con = sqlite3.connect('data.db')
 c = con.cursor()
 
-def check_jwt(jwt):
+def check_jwt(j):
     try:
-        decoded = jwt.decode(jwt, jwt_key)
-        return jwt
+        decoded = jwt.decode(j, jwt_key)
+        return decoded
     except:
         return False
 
@@ -200,6 +200,8 @@ def post_comment():
     try:
         decoded = jwt.decode(data['jwt'], jwt_key)
 
+        print(data, decoded)
+
         c.execute('INSERT INTO comments (post_id, user_id, comment, date) VALUES (?, ?, ?, ?)',
                   (data['id'], decoded['user_id'], data['comment'], get_date()))
         con.commit()
@@ -214,6 +216,8 @@ def post_comment():
                 INNER JOIN comments ON posts.post_id=comments.post_id\
                  INNER JOIN users ON posts.user_id=users.user_id WHERE posts.post_id=?', (data['id'],))
         line = c.fetchall()[-1]
+
+        print(line)
 
         return jsonify({'name': '{} {}'.format(line[1], line[2]), 'comment': line[3],
                             'mine': True, 'date': line[4], 'id': line[5]})
@@ -236,18 +240,31 @@ def get_comments():
     else:
         to_send = []
 
-        c.execute('SELECT comments.user_id, last_name, first_name, comment, comments.date, comment_id FROM posts\
-        INNER JOIN comments ON posts.post_id=comments.post_id\
-         INNER JOIN users ON posts.user_id=users.user_id WHERE posts.post_id=?', (data['id'],))
+        c.execute('SELECT comment_id, user_id, comment, date FROM comments WHERE post_id=?', (data['id'],))
+
         lines = c.fetchall()
 
+        # c.execute('SELECT comments.user_id, last_name, first_name, comment, comments.date, comment_id FROM posts\
+        # INNER JOIN comments ON posts.post_id=comments.post_id\
+        #  INNER JOIN users ON posts.user_id=users.user_id WHERE posts.post_id=?', (data['id'],))
+        # lines = c.fetchall()
+
         for line in lines:
-            if decoded['user_id'] == line[0]:
+
+            c.execute('SELECT last_name, first_name FROM users WHERE user_id=?', (line[1],))
+
+            try:
+                l = c.fetchall()[0]
+            except:
+                continue
+
+            if decoded['user_id'] == line[1]:
                 mine = True
             else:
                 mine = False
-            to_send.append({'name': '{} {}'.format(line[1], line[2]), 'comment': line[3],
-                            'mine': mine, 'date': line[4], 'id': line[5]})
+            to_send.append({'name': '{} {}'.format(l[0], l[1]), 'comment': line[2],
+                            'mine': mine, 'date': line[3], 'id': line[0]})
+            print(to_send)
 
         return jsonify(to_send)
 
@@ -267,7 +284,65 @@ def delete_comment():
 
     return jsonify({'status': True})
 
+def robot_help():
+    return jsonify({'text': '/info [allergy]\n/pills [allergy]\n/drugstores\n/ask'})
 
+@app.route('/robot', methods=['POST'])
+def robot():
+    data = request.get_json(force=True)
+
+    if check_jwt(data['jwt']) == False:
+        return jsonify('Invalid token!')
+
+    if data['command'].lower().split(' ')[0] == '/info':
+        return robot_info(data['command'].split(' ')[1:])
+    elif data['command'].lower() == '/help':
+        return robot_help()
+    elif data['command'].lower().split(' ')[0] == '/pills':
+        return robot_pills(allergy)
+
+
+def robot_info(allergy):
+    try:
+        allergy.remove('allergy')
+    except:
+        pass
+    for w in allergy:
+        w = w.lower()
+    print(allergy)
+
+    c.execute('SELECT description, name FROM allergies')
+
+    allergies = c.fetchall()
+
+    for a in allergies:
+        # if a[1].lower() == allergy.lower():
+        #     return jsonify({'text': a[0]})
+        a_words = a[1].lower().split(' ')
+        try:
+            a_words.remove('allergy')
+        except:
+            pass
+        for a_word in a_words:
+            for aller in allergy:
+                if a_word == aller:
+                    print('ye')
+                    return jsonify({'text': a[0]})
+
+    return jsonify({'text': 'Allergy not found, do you want to tell us something about it?', 'buttons': 2,
+                    'button_names': ['yes', 'no'], 'url': '/add_allergy',
+                    'questions': ['What\'s the name of the allergy?', 'How does the allergy manifest?',
+                                  'What pills can you take to help you fight the allergy?']})
+
+@app.route('/add_allergy', methods=['POST'])
+def add_allergy():
+    data = request.get_json(force=True)
+
+    c.execute('INSERT INTO allergies (name, description, pills) VALUES (?, ?, ?)',
+              (data['name'], data['description'], data['pills']))
+    con.commit()
+
+    return jsonify({'status': True})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
