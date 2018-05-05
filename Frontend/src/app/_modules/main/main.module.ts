@@ -24,7 +24,6 @@ import { ChatComponent } from './chat/chat.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CommentComponent } from './start-page/posts/post/comment/comment.component';
 
-
 const appRoutes: Routes = [
   { path: 'allergy', component:  MainComponent, canActivate: [AuthGuard]},
   { path: '', component:  StartPageComponent, canActivate: [AuthGuard]},

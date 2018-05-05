@@ -45,7 +45,7 @@ export class PostComponent implements OnInit {
       for (var _i = 0; _i < res['length']; _i++)
        {
          this.comments.push(res[_i]);
-         //console.log(res[_i]);
+         console.log(res[_i]);
        }
         console.log()
     })

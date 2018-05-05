@@ -9,27 +9,35 @@
 
       <div class="message-bubble">
         <div class="message-avatar"><img src="./assets/robot.png" alt=""></div>
-        <div class="message-text"><p>Hello, I want to talk about your great listing! Morbi velit eros, sagittis in facilisis non, rhoncus et erat. Nam posuere tristique sem, eu ultricies tortor lacinia neque imperdiet vitae.</p></div>
+        <div class="message-text"><p>Hello, I'm Robo Allergy. Type '/h' or '/help' for a full list of comands.</p></div>
       </div>
 
-      <div class="message-bubble me">
-        <div class="message-avatar"><img src="images/dashboard-avatar.jpg" alt=""></div>
-        <div class="message-text"><p>Nam ut hendrerit orci, ac gravida orci. Cras tristique rutrum libero at consequat. Vestibulum vehicula neque maximus sapien iaculis, nec vehicula sapien fringilla.</p></div>
-      </div>     
-      
-      <div class="message-bubble">
-        <div class="message-avatar"><img src="./assets/robot.png" alt=""></div>
-        <div class="message-text"><p>Hello, I want to talk about your great listing! Morbi velit eros, sagittis in facilisis non, rhoncus et erat. Nam posuere tristique sem, eu ultricies tortor lacinia neque imperdiet vitae.</p></div>
-      </div>
+      <div *ngFor="let comment of comments">
+        <div *ngIf="comment.user" class="message-bubble me">
+          <div class="message-avatar"><img src="images/dashboard-avatar.jpg" alt=""></div>
+          <div class="message-text"><p>{{comment.text}}</p></div>
+        </div>
 
-      <div class="message-bubble me">
-        <div class="message-avatar"><img src="images/dashboard-avatar.jpg" alt=""></div>
-        <div class="message-text"><p>Nam ut hendrerit orci, ac gravida orci. Cras tristique rutrum libero at consequat. Vestibulum vehicula neque maximus sapien iaculis, nec vehicula sapien fringilla.</p></div>
-      </div>  
+        <div *ngIf="!comment.user" class="message-bubble">
+          <div class="message-avatar"><img src="./assets/robot.png" alt=""></div>
+          <div style="white-space: pre-line" class="message-text"><p>{{comment.text}}</p></div>
+            <!-- <div *ngIf="text!==undefined">
+              <h1>da</h1>
+              <div class="message-text"><p>{{comment.text}}</p></div>
+            </div>
+            <div *ngIf="!text">
+                <div *ngFor="let option of comment.options" class="message-text"><p>{{option}}</p></div>
+            </div> -->
+          <!-- <div class="message-text"><p>Hello, I'm Robo Allergy. Type '/h' or '/help' for a full list of comands.</p></div> -->
+        </div>
+    </div>
+
   </div>
   <div class="clearfix"></div>
+  <button _ngcontent-c1="" class="button">Yes</button>
+  <button _ngcontent-c1="" class="button">No</button>
   <div class="message-reply" style="margin-bottom: 3%">
-    <textarea cols="40" rows="3" placeholder="Your Message"></textarea>
-    <button class="button">Send Message</button>
+    <textarea [(ngModel)]='message' cols="40" rows="3" placeholder="Your Message"></textarea>
+    <button class="button" (click)="sendCommand()">Send Message</button>
   </div>
 </div>
