@@ -1,12 +1,13 @@
 <app-navbar></app-navbar>
 <app-weather></app-weather>
 <div class="container">
+
   <div class="messages-headline" style="margin-bottom: 3%">
     <h4>Robo Allergy</h4>
     <a href="#" class="message-action"><i class="fas fa-ban"></i> Delete Conversation</a>
   </div>
-  <div class="message-content" style="margin-bottom: 3%; height:238px; overflow: auto" >
 
+  <div class="message-content" style="margin-bottom: 3%; height:238px; overflow: auto" >
       <div class="message-bubble">
         <div class="message-avatar"><img src="./assets/robot.png" alt=""></div>
         <div class="message-text"><p>Hello, I'm Robo Allergy. Type '/h' or '/help' for a full list of comands.</p></div>
@@ -19,23 +20,57 @@
         </div>
 
         <div *ngIf="!comment.user" class="message-bubble">
-          <div class="message-avatar"><img src="./assets/robot.png" alt=""></div>
-          <div style="white-space: pre-line" class="message-text"><p>{{comment.text}}</p></div>
-            <!-- <div *ngIf="text!==undefined">
-              <h1>da</h1>
-              <div class="message-text"><p>{{comment.text}}</p></div>
-            </div>
-            <div *ngIf="!text">
-                <div *ngFor="let option of comment.options" class="message-text"><p>{{option}}</p></div>
-            </div> -->
-          <!-- <div class="message-text"><p>Hello, I'm Robo Allergy. Type '/h' or '/help' for a full list of comands.</p></div> -->
-        </div>
-    </div>
-
+            <div class="message-avatar"><img src="./assets/robot.png" alt=""></div>
+            <div style="white-space: pre-line" class="message-text"><p>{{comment.text}}</p></div>
+          </div>
+      </div>
   </div>
+
+
+ <!-- The Modal -->
+<div [style.display]="add_allergy_pop? 'block' : 'none'"class="modal" id="myModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+  
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Your allergy was not found, please complete down</h4>
+          <button type="button" (click)="add_allergy_pop = false"class="close" data-dismiss="modal">&times;</button>
+        </div>
+  
+        <!-- Modal body -->
+        <div class="modal-body">
+            <form>
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Name of the allergy:</label>
+                  <input [(ngModel)]='alergyTitle' name="s" type="text" class="form-control">
+                </div> 
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Description of allergy:</label>
+                  <input [(ngModel)]='alergyDescription' name="sd" type="text" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Description of allergy:</label>
+                  <input [(ngModel)]='alergyPills' name="sf" type="text" class="form-control">
+                </div>
+            </form>
+        </div>
+  
+        <!-- Modal footer -->
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" (click)="addAllergy()" data-dismiss="modal">Add for review</button>
+          <button type="button" class="btn btn-danger" (click)="add_allergy_pop = false" data-dismiss="modal">Close</button>
+        </div>
+  
+      </div>
+    </div>
+  </div>
+
+
+    
   <div class="clearfix"></div>
-  <button _ngcontent-c1="" class="button">Yes</button>
-  <button _ngcontent-c1="" class="button">No</button>
+  <!-- <button _ngcontent-c1="" class="button">Yes</button>
+  <button _ngcontent-c1="" class="button">No</button> -->
   <div class="message-reply" style="margin-bottom: 3%">
     <textarea [(ngModel)]='message' cols="40" rows="3" placeholder="Your Message"></textarea>
     <button class="button" (click)="sendCommand()">Send Message</button>

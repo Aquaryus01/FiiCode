@@ -14,6 +14,7 @@ export class ChatComponent implements OnInit {
 
   message: string = "";
   comments: Chat[] = [];
+  add_allergy_pop: boolean = false;
 
   ngOnInit() {
   }
@@ -33,15 +34,23 @@ export class ChatComponent implements OnInit {
     console.log(parameter);
     this.http.post(this.settings.getUrl() + "/robot", parameter).subscribe(res => {
       console.log(res);
-      comentel = new Chat;
-      comentel.text = res['text'];
-      comentel.options = res['options'];
-      comentel.buttons = res['buttons'];
-      comentel.button_names = res['button_names'];
-      comentel.user = false;
-      comentel.url = res['url'];
-      this.comments.push(comentel);
-      console.log(this.comments);
+
+      if(res['check'] == "add_allergy")
+      {
+          console.log('ssssssssssssssss');
+          comentel.allergy = res['allergy'];
+          this.add_allergy_pop = true;
+      }
+      else
+      {
+        comentel = new Chat;
+        comentel.text = res['text'];
+        comentel.check = res['check'];
+        comentel.url = res['url'];
+        comentel.user = false;
+        this.comments.push(comentel);
+        console.log(this.comments);
+      }
     });
   }
 /*
@@ -66,5 +75,18 @@ var parameter = new Object;
     u.text = text
     u.lang = 'en-US';
     speechSynthesis.speak(u);
-}
+  }
+
+  alergyTitle: string = "";
+  alergyDescription: string = "";
+  alergyPills: string = "";
+  addAllergy(){
+    var parameter = new Object;
+    parameter['jwt'] = this.settings.getToken();
+    parameter['name'] = this.alergyTitle;
+    parameter['description'] = this.alergyDescription;
+    parameter['pills'] = this.alergyPills;
+    parameter = JSON.stringify(parameter);
+    this.http.post(this.settings.getUrl() + '/add_allergy', parameter).subscribe(res => console.log(res));
+  }
 }
