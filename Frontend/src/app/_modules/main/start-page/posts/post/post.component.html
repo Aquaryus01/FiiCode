@@ -31,7 +31,7 @@
                     <div class="avatar"><img src="http://www.gravatar.com/avatar/00000000000000000000000000000000?d=mm&amp;s=70" alt=""></div>
                     <div class="comment-content"><div class="arrow-comment"></div>
                         <div class="comment-by">{{comment.name}}<span class="date">{{comment.date}}</span>
-                            <a (click)="removeComment(comment)" class="reply"><i class="fas fa-times"></i></a>
+                            <a *ngIf="comment.mine" (click)="removeComment(comment)" class="reply"><i class="fas fa-times"></i></a>
                         </div>
                         <p>{{comment.comment}}</p>
                     </div>

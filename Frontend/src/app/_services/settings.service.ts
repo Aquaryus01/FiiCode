@@ -6,7 +6,7 @@ import { Observable } from 'rxjs/Observable';
 export class SettingsService {
 
   
-  private url = "http://localhost:5000";
+  private url = "http://192.168.0.124:5000";
   private localStorage = window.localStorage;
 
   constructor(private http: HttpClient) { }
@@ -29,6 +29,5 @@ export class SettingsService {
   public removeToken()
   {
     this.localStorage.clear(); 
-  }
-  
+  } 
 }

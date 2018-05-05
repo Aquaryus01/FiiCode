@@ -4,4 +4,5 @@ export class Comment {
     comment: boolean;
     date: string;
     mine: boolean;
+    url: string;
 }
