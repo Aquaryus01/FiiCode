@@ -12,6 +12,7 @@ import { MainModule } from './_modules/main/main.module';
 import { NgModel } from '@angular/forms';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+
 @NgModule({
   declarations: [
     AppComponent

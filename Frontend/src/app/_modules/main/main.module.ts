@@ -23,11 +23,13 @@ import { PostService } from './start-page/_services/post.service';
 import { ChatComponent } from './chat/chat.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CommentComponent } from './start-page/posts/post/comment/comment.component';
+import { AdminComponent } from './admin/admin.component';
 
 const appRoutes: Routes = [
   { path: 'allergy', component:  MainComponent, canActivate: [AuthGuard]},
   { path: '', component:  StartPageComponent, canActivate: [AuthGuard]},
-  { path: 'chat', component:  ChatComponent, canActivate: [AuthGuard]}
+  { path: 'chat', component:  ChatComponent, canActivate: [AuthGuard]},
+  { path: 'admin', component:  AdminComponent, canActivate: [AuthGuard]}
 ];
 
 @NgModule({
@@ -41,7 +43,7 @@ const appRoutes: Routes = [
     NgbModule.forRoot(),
     BrowserAnimationsModule
   ],
-  declarations: [MainComponent, NavbarComponent, CardsComponent, CardComponent, StartPageComponent, PostsComponent, PostComponent, AddPostsComponent, WeatherComponent, SearchBarComponent, QuestionComponent, PopularPostsComponent, ChatComponent, CommentComponent],
+  declarations: [AdminComponent,MainComponent, NavbarComponent, CardsComponent, CardComponent, StartPageComponent, PostsComponent, PostComponent, AddPostsComponent, WeatherComponent, SearchBarComponent, QuestionComponent, PopularPostsComponent, ChatComponent, CommentComponent],
   providers: [AuthGuard, PostService]
 })
 export class MainModule { }
