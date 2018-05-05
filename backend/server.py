@@ -268,7 +268,7 @@ def delete_comment():
     return jsonify({'status': True})
 
 def robot_help():
-    return jsonify({'text': '/info [allergy]\n/pills [allergy]\n/drugstores\n/now\n/'})
+    return jsonify({'text': '/info [allergy]\n/pills [allergy]\n/drugstores\n/now\n/add'})
 
 @app.route('/robot', methods=['POST'])
 def robot():
@@ -303,6 +303,9 @@ def robot():
     elif data['command'].lower() == '/now':
         return robot_now()
 
+    elif data['command'].lower().startswith('/add'):
+        return jsonify({'check': 'add_allergy', 'allergy': data['command'].lower().split(' ')[1:]})
+
     return robot_help()
 
 
@@ -333,7 +336,7 @@ def robot_generic(allergy, action):
                     elif action == 'pills':
                         return jsonify({'text': a[3], 'url': a[2], 'allergy': a[1]})
 
-    return jsonify({'check': 'add_allergy', 'allergy': aux})
+    return jsonify({'text': '{} not found'.format(aux[0])})
 
 @app.route('/add_allergy', methods=['POST'])
 def add_allergy():
