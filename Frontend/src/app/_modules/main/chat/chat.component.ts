@@ -49,6 +49,7 @@ export class ChatComponent implements OnInit {
 
       if(res['check'] == "add_allergy")
       {
+          this.alergyTitle = comentel.allergy = res['allergy'];
           console.log('ssssssssssssssss');
           comentel.allergy = res['allergy'];
           this.add_allergy_pop = true;
@@ -105,6 +106,7 @@ var parameter = new Object;
   alergyDescription: string = "";
   alergyPills: string = "";
   addAllergy(){
+    this.add_allergy_pop = false;
     var parameter = new Object;
     parameter['jwt'] = this.settings.getToken();
     parameter['name'] = this.alergyTitle;
