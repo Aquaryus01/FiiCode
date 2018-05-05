@@ -295,23 +295,24 @@ def robot():
         return jsonify('Invalid token!')
 
     if data['command'].lower().split(' ')[0] == '/info':
-        return robot_info(data['command'].split(' ')[1:])
+        return robot_generic(data['command'].split(' ')[1:], 'info')
+
     elif data['command'].lower() == '/help':
         return robot_help()
+
     elif data['command'].lower().split(' ')[0] == '/pills':
-        return robot_pills(allergy)
+        return robot_generic(data['command'].split(' ')[1:], 'pills')
 
 
-def robot_info(allergy):
+def robot_generic(allergy, action):
     try:
         allergy.remove('allergy')
     except:
         pass
     for w in allergy:
         w = w.lower()
-    print(allergy)
 
-    c.execute('SELECT description, name FROM allergies')
+    c.execute('SELECT description, name, image, pills FROM allergies')
 
     allergies = c.fetchall()
 
@@ -326,20 +327,19 @@ def robot_info(allergy):
         for a_word in a_words:
             for aller in allergy:
                 if a_word == aller:
-                    print('ye')
-                    return jsonify({'text': a[0]})
+                    if action == 'info':
+                        return jsonify({'text': a[0], 'url': a[2]})
+                    elif action == 'pills':
+                        return jsonify({'text': a[3], 'url': a[2]})
 
-    return jsonify({'text': 'Allergy not found, do you want to tell us something about it?', 'buttons': 2,
-                    'button_names': ['yes', 'no'], 'url': '/add_allergy',
-                    'questions': ['What\'s the name of the allergy?', 'How does the allergy manifest?',
-                                  'What pills can you take to help you fight the allergy?']})
+    return jsonify({'check': 'add_allergy'})
 
 @app.route('/add_allergy', methods=['POST'])
 def add_allergy():
     data = request.get_json(force=True)
 
-    c.execute('INSERT INTO allergies (name, description, pills) VALUES (?, ?, ?)',
-              (data['name'], data['description'], data['pills']))
+    c.execute('INSERT INTO allergies (name, description, image, pills) VALUES (?, ?, ?, ?)',
+              (data['name'], data['description'], data['url'], data['pills']))
     con.commit()
 
     return jsonify({'status': True})
