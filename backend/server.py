@@ -194,7 +194,7 @@ def post_comment():
     data = request.get_json(force=True)
     try:
         decoded = jwt.decode(data['jwt'], jwt_key)
-
+        print(decoded)
         c.execute('INSERT INTO comments (post_id, user_id, comment, date) VALUES (?, ?, ?, ?)',
                   (data['id'], decoded['user_id'], data['comment'], get_date()))
         con.commit()
@@ -210,7 +210,11 @@ def post_comment():
                  INNER JOIN users ON posts.user_id=users.user_id WHERE posts.post_id=?', (data['id'],))
         line = c.fetchall()[-1]
 
-        return jsonify({'name': '{} {}'.format(line[1], line[2]), 'comment': line[3],
+        c.execute('SELECT last_name, first_name FROM users WHERE user_id=?', (decoded['user_id'],))
+        name = c.fetchall()[0]
+
+
+        return jsonify({'name': '{} {}'.format(name[0], name[1]), 'comment': line[3],
                             'mine': True, 'date': line[4], 'id': line[5]})
     except:
         return jsonify({'status': False})
