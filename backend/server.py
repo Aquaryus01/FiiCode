@@ -226,11 +226,10 @@ def get_comments():
     c.execute('SELECT comments_nr FROM posts WHERE post_id=?', (data['id'],))
 
     nr = c.fetchone()[0]
+    to_send = []
     if int(nr) == 0:
-        return jsonify({'status': False, 'message': 'No comments'})
+        return jsonify(to_send)
     else:
-        to_send = []
-
         c.execute('SELECT comment_id, user_id, comment, date FROM comments WHERE post_id=?', (data['id'],))
 
         lines = c.fetchall()
